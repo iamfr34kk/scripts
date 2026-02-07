@@ -38,6 +38,10 @@ sleep 1s
 
 ./extra_app.sh
 
+sleep 1s
+
+./extensions.sh
+
 sleep 5s
 
 echo "Task finished"

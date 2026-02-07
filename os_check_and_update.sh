@@ -34,7 +34,7 @@ arch_debloat() {
 }
 
 check_installed_pkgs() {
-  PACKAGES_ARCH=("firefox" "neovim" "fzf" "flatpak" "zsh" "steam" "lutris" "mangohud" "gamemode" "vlc" "gnome-tweaks" "figlet" "lolcat" "wget" "curl" "git" "base-devel" "qbittorrent" "fuse3" "vlc-plugins-all")
+  PACKAGES_ARCH=("firefox" "neovim" "fzf" "flatpak" "zsh" "steam" "lutris" "mangohud" "gamemode" "vlc" "gnome-tweaks" "figlet" "lolcat" "wget" "curl" "git" "base-devel" "qbittorrent" "fuse3" "vlc-plugins-all" "extension-manager")
   for pkg in "${PACKAGES_ARCH[@]}"; do
     if pacman -Q "$pkg" &>/dev/null; then
       echo "'$pkg' is Installed"
