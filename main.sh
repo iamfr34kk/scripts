@@ -42,6 +42,8 @@ sleep 1s
 
 ./extensions.sh
 
-sleep 5s
+sleep 0.5
+
+./theming.sh
 
 echo "Task finished"
