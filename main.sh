@@ -42,8 +42,12 @@ sleep 1s
 
 ./extensions.sh
 
-sleep 0.5
+sleep 1s
 
 ./theming.sh
+
+sleep 1s
+
+./gpu_driver.sh
 
 echo "Task finished"
