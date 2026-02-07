@@ -1,0 +1,163 @@
+#!/bin/bash
+
+# System Update && Upgrade && debloating default arch
+if ping -c 1 8.8.8.8 >/dev/null 2>&1; then
+  sleep 0.5
+  ./os_check_and_update.sh
+else
+  echo "Not connected to internet : ... "
+fi
+
+sleep 1s
+
+#Installed packages debian based
+if command -v apt &>/dev/null || command -v dpkg &>/dev/null; then
+  PACKAGES=("neovim" "fzf" "vlc" "flatpak" "zsh" "figlet" "lolcat" "wget" "curl" "git" "qbittorrent")
+  MISSING_PKGS=""
+  for pkg in "${PACKAGES[@]}"; do
+    if ! dpkg -s "$pkg" >/dev/null 2>&1; then
+      MISSING_PKGS="$MISSING_PKGS$pkg"
+    fi
+  done
+  if [ -n "$MISSING_PKGS" ]; then
+    echo "The following packages are missing: $MISSING_PKGS"
+    read -p "Do you want to install them? [Y/N] : " answer
+    if [[ "$answer" =~ [Yy] ]] || [[ -z "$answer" ]]; then
+      sudo apt install $MISSING_PKGS
+      read -p "Do you want to install kitty terminal : " kitty_ans
+      if [[ "$kitty_ans" =~ [Yy] ]] || [[ -z "$kitty_ans" ]]; then
+        curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+      fi
+    fi
+  fi
+fi
+
+#Installed packages arch linux
+#if command -v pacman &>/dev/null || [ -f /etc/arch-release]; then
+# Function to check if a package is installed in Arch Linux
+#  is_package_installed() {
+#   local pkg_name=$1
+#    # pacman -Q queries the local database.
+#    # We redirect output to /dev/null to prevent it from cluttering the script's output.
+#    # The command succeeds (exit code 0) if the package is found, fails (exit code 1) otherwise.
+#    pacman -Q "$pkg_name" &>/dev/null
+#    # Return the exit status of the pacman command
+#    return $?
+#  }
+
+  # Example usage:
+#  PACKAGES_ARCH=("fakeroot", "firefox", "neovim", "fzf", "flatpak", "zsh", "steam", "lutris", "mangohud", "gamemode", "vlc", "gnome-tweaks", "figlet", "lolcat", "wget", "curl", "git", "base-devel", "qbittorrent")
+#
+#  if is_package_installed "$PACKAGES_ARCH"; then
+#    echo "The package $PACKAGES_ARCH is installed."
+#  else
+#    echo "The package $PACKAGES_ARCH is not installed. Installing now..."
+#    sudo pacman -S --noconfirm "$PACKAGES_ARCH"
+#   read -p "Do you want to install kitty terminal : " kitty_ans
+#    if [[ "$kitty_ans" =~ [Yy] ]] || [[ -z "$kitty_ans" ]]; then
+#     curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+#    fi
+#  fi
+#  if command -v yay &>/dev/null; then
+#    echo "yay is installed"
+#  else
+#    ./git_pkg_install.sh https://aur.archlinux.org/yay.git
+#  fi
+#PACKAGES_ARCH=("firefox" "neovim" "fzf" "flatpak" "zsh" "steam" "lutris" "mangohud" "gamemode" "vlc" "gnome-tweaks" "figlet" "lolcat" "wget" "curl" "git" "base-devel" "qbittorrent")
+#for pkg in "${PACKAGES_ARCH[@]}"; do
+#       if pacman -Q "$pkg" &> /dev/null; then
+#                echo "'$pkg' is Installed"
+#        else
+#                sudo pacman -S "$pkg" --noconfirm
+#        fi
+#done
+#exit 0
+#fi
+
+# sleep 1s
+
+#if command -v pacman &>/dev/null || [ -f /etc/arch-release]; then
+#  is_yay_pkg_installed() {
+#    local yay_pkg=$1
+#    yay -Q "$yay_pkg" &>/dev/null
+#    return $?
+#  }
+#  PACKAGE_YAY="brave-bin"
+#  if is_yay_pkg_installed "$PACKAGE_YAY"; then
+#    echo "The package $PACKAGE_YAY is installed"
+#  else
+#    echo "The package $PACKAGE_YAY is not installed. Installing now ..."
+#    yay -S --noconfirm "$PACKAGE_YAY"
+#  fi
+
+#PACKAGES_YAY=("brave")
+#for pkg_yay in "${PACKAGES_YAY[@]}"; do
+#        if yay -Q "$pkg_yay" &> /dev/null; then
+#                echo "'$pkg_yay' is Installed"
+#        else
+#                yay -S brave-bin --noconfirm
+#        fi
+#done
+#exit 0
+#
+#fi
+#
+sleep 1s
+
+#Fonts install
+#find ~/.local/share/fonts/ -iname Fira*.ttf >~/scripts/ttf.txt 2>&1
+#if [[ -s ~/scripts/ttf.txt ]]; then
+# echo "Fonts found :- "
+# cat ~/scripts/ttf.txt
+#else
+# echo "Fonts not found"
+#read -p "Do you want to install fonts? Yes or No : " reply
+#if [[ "$reply" =~ [Yy] ]]; then
+#  mkdir ~/fonts
+#   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip && unzip -d ~/.local/share/fonts/ FiraCode.zip
+#  read -p "Do you want to delete zip file" reply_2
+#   if [[ "$reply_2" = 'Y' ]]; then
+#    rm ~/fonts/FiraCode.zip
+#    rm -rf ~/fonts
+# else
+#   echo "Not deleting downloaded file"  #  fi
+# fi
+#fi
+
+./font_match.sh
+
+sleep 1s
+
+#Neovim Setup
+PACKAGE_NEOVIM="neovim"
+if dpkg -s "$PACKAGE_NEOVIM" >/dev/null 2>&1; then
+  git clone https://github.com/LazyVim/starter ~/.config/nvim
+  rm -rf ~/.config/nvim/.git
+fi
+
+#Neovim for arch linux
+NEOVIM_ARCH_PACKAGE="neovim"
+if command -v pacman &>/dev/null || [ -f /etc/arch-release]; then
+  if is_package_installed "$NEOVIM_ARCH_PACKAGE"; then
+    git clone https://github.com/LazyVim/starter ~/.config/nvim
+    rm -rf ~/.config/nvim/.git
+  fi
+fi
+
+sleep 1s
+
+#Theming GNOME && neovim LazyVim setup
+
+./git_pkg_install.sh https://github.com/vinceliuice/Colloid-gtk-theme.git
+
+sleep 0.5
+
+./git_pkg_install.sh https://github.com/vinceliuice/Colloid-icon-theme.git
+
+sleep 0.5
+
+./git_pkg_install.sh https://github.com/iamfr34kk/neovim.git
+
+sleep 0.5
+
+echo "Task finished"
