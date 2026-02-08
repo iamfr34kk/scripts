@@ -9,5 +9,7 @@ if [[ -d /home/$(whoami)/.local/kitty.app ]]; then
   echo "kitty directory found"
 else
   curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-  sudo ln -sf /home/$(whoami)/.local/kitty.app/bin/* /usr/local/bin
+  mkdir /home/$(whoami)/.local/bin
+  sudo ln -sf /home/$(whoami)/.local/kitty.app/bin/* /home/$(whoami)/.local/bin
+  cp /home/$(whoami)/.local/kitty.app/share/applications/kitty.desktop /home/$(whoami)/.local/share/applications
 fi
